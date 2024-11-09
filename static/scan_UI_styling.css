@@ -1,0 +1,226 @@
+/* Reset and general setup */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background: #121212;
+    color: #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+}
+
+.light-mode {
+    background: #f0f0f0;
+    color: #333;
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-top: 40px;
+}
+
+header h1 {
+    font-size: 3em;
+    color: #BB86FC;
+}
+
+header p {
+    font-size: 1.2em;
+    color: #bdbdbd;
+}
+
+#themeToggle {
+    background: none;
+    border: 2px solid #BB86FC;
+    border-radius: 8px;
+    padding: 5px 10px;
+    color: inherit;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.3s ease, color 0.3s;
+}
+
+#themeToggle:hover {
+    background: #BB86FC;
+    color: #121212;
+}
+
+.scanner .container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#hostname, #startPort, #endPort {
+    flex: 1;
+    padding: 15px;
+    font-size: 1em;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background-color: #333;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+#hostname:focus, #startPort:focus, #endPort:focus {
+    outline: none;
+    border-color: #BB86FC;
+}
+
+#scanButton {
+    padding: 12px 18px;
+    font-size: 1em;
+    background: #BB86FC;
+    color: #121212;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+#scanButton:hover {
+    background: #9a67ea;
+}
+
+/* Loading and Results */
+.loading {
+    display: none;
+    font-size: 1.2em;
+    color: #BB86FC;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.progress-bar {
+    width: 100%;
+    max-width: 600px;
+    height: 8px;
+    background: #333;
+    border-radius: 4px;
+    margin: 15px 0;
+}
+
+.progress {
+    height: 100%;
+    width: 0;
+    background: #BB86FC;
+    border-radius: 4px;
+    transition: width 0.3s;
+}
+
+.results {
+    padding: 20px;
+    background: #1e1e1e;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    font-size: 1em;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.results ul li {
+    padding: 8px 0;
+}
+
+.open {
+    color: #4caf50;
+}
+
+.closed {
+    color: #f44336;
+}
+
+.filtered {
+    color: #ff9800;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+/* General and dark/light mode styling as previously set up */
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.tab-button {
+    background: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.tab-button.active {
+    background: #BB86FC;
+}
+
+.tool-section {
+    display: none;
+}
+
+.tool-section.active {
+    display: block;
+}
+
+.description {
+    font-size: 1em;
+    color: #bdbdbd;
+    margin-bottom: 10px;
+}
+
+/* General and dark/light mode styling as previously set up */
+
+/* Tabs styling */
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.tab-button {
+    background: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.tab-button.active {
+    background: #BB86FC;
+}
+
+.tool-section {
+    display: none;
+    padding: 20px;
+    max-width: 800px;
+    width: 100%;
+}
+
+.tool-section.active {
+    display: block;
+}
+
+.description {
+    font-size: 1em;
+    color: #bdbdbd;
+    margin-bottom: 10px;
+}

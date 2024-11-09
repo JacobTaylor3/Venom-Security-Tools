@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Multitool</title>
+    <link rel="stylesheet" href="../static/scan_UI_styling.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>🌐 Network Multitool</h1>
+        <p>Your all-in-one toolkit for network diagnostics</p>
+        <button id="themeToggle">Toggle Theme</button>
+    </header>
+
+    <!-- Tabs for Different Tools -->
+    <section class="tabs">
+        <button class="tab-button active" data-tab="portScan">Port Scanner</button>
+        <button class="tab-button" data-tab="networkDiscovery">Network Discovery</button>
+        <button class="tab-button" data-tab="stressTest">Stress Test</button>
+        <button class="tab-button" data-tab="history">Scan History</button>
+    </section>
+
+    <!-- Tool Sections -->
+    <section id="portScan" class="tool-section active">
+        <h2>Port Scanner</h2>
+        <p class="description">Scan for open ports on a specific hostname or IP address.</p>
+        <div class="scanner">
+            <div class="container">
+                <input type="text" id="hostname" placeholder="Enter hostname or IP" />
+                <input type="number" id="startPort" placeholder="Start Port" min="1" max="65535" />
+                <input type="number" id="endPort" placeholder="End Port" min="1" max="65535" />
+                <button id="scanButton">Start Scan</button>
+            </div>
+            <div id="loading" class="loading">Scanning in progress...</div>
+            <div class="progress-bar hidden">
+                <div id="progress" class="progress"></div>
+            </div>
+            <div id="results" class="results hidden"></div>
+        </div>
+    </section>
+
+    <section id="networkDiscovery" class="tool-section">
+        <h2>Network Discovery</h2>
+        <p class="description">Find active devices on a local subnet (e.g., 192.168.1.x).</p>
+        <div class="discovery">
+            <input type="text" id="subnet" placeholder="Enter subnet (e.g., 192.168.1.0/24)" />
+            <button id="discoverButton">Discover Devices</button>
+            <div id="discoveryLoading" class="loading">Discovering devices...</div>
+            <div id="discoveryResults" class="results hidden"></div>
+        </div>
+    </section>
+
+    <section id="stressTest" class="tool-section">
+        <h2>Network Stress Test</h2>
+        <p class="description">Simulate load on an IP/hostname to test its responsiveness.</p>
+        <div class="stress-test">
+            <input type="text" id="targetIP" placeholder="Enter target IP or hostname" />
+            <input type="number" id="packetSize" placeholder="Packet Size (bytes)" min="32" max="65507" />
+            <button id="stressButton">Start Stress Test</button>
+            <div id="stressLoading" class="loading">Applying network load...</div>
+            <div id="stressResults" class="results hidden"></div>
+        </div>
+    </section>
+
+    <section id="history" class="tool-section">
+        <h2>Scan History</h2>
+        <p class="description">View recent scans and their results.</p>
+        <div id="historyContent" class="results">
+            <p>No history available yet.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>Powered by <strong>Network Multitool</strong></p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
