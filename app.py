@@ -1,3 +1,13 @@
-#flask code goes here to link 
+from flask import Flask,render_template
 
-print("Hello World")
+app = Flask(__name__)
+
+
+
+@app.route("/home")
+def homepage():
+    return render_template("homepage.html")
+    
+
+if __name__ == "__main__":
+    app.run()
