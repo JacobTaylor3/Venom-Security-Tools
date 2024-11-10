@@ -32,11 +32,9 @@ def pingIpAdr(ip:str,timeout_pr =8)-> tuple[Optional[Packet], float]: #test this
     
      endTime = time.time()
     
-     elapsedSeconds = endTime - startTime
+     elapsedMiliseconds = round((endTime - startTime)* 1000, 3)
      
-     millisecondsElapsed = round(elapsedSeconds,3)
-
-     return (response, millisecondsElapsed)
+     return (response, elapsedMiliseconds)
    
    
 def sendPing(ipAdr:str):
@@ -46,7 +44,6 @@ def sendPing(ipAdr:str):
      
     return output
 
-print(sendPing("8.8.8.8"))
+print(sendPing("1.1.1.1"))
 
 
-print(sendPing("8.8.8.8"))
