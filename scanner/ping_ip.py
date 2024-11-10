@@ -15,17 +15,19 @@ def checkDataPacket(response:tuple[Optional[Packet], float])->str:
        return f"Response:{response[0].show()}"
     
 
-def pingIpAdr(ip:str,timeout_pr =8)-> tuple[Optional[Packet], float]:
+def pingIpAdr(ip:str,timeout_pr =8)-> tuple[Optional[Packet], float]: #test this function for testing make sure its not None
        
      startTime = time.time() #bytes
     
-     response = sr1(IP(dst= ip) /ICMP(),verbose= False)  
+     response = sr1(IP(dst= ip,timeout= timeout_pr) /ICMP(),verbose= False)  
     
      endTime = time.time()
     
-     elapsedTime = endTime - startTime
+     elapsedSeconds = endTime - startTime
+     
+     millisecondsElapsed = round(elapsedSeconds,3)
 
-     return (response, elapsedTime)
+     return (response, millisecondsElapsed)
    
    
 def sendPing(ipAdr:str):
