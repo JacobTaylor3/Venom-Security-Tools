@@ -1,24 +1,34 @@
 
-from scapy.all import IP, ICMP, sr1,Raw
+from scapy.all import IP, ICMP, sr1,Raw,send,Packet
 
 import time 
 
+from typing import Optional
 
 
 
-def pingIP(ip:str,time =8)-> str:
+def checkDataPacket(response:tuple[Optional[Packet], float])->str:
+    if response[0] is None:
+        return "No Response"
     
-    bytes = Raw(b"A" * 32), startTime = time.time() #bytes
+    else:
+       return f"Response:{response[0].show()}"
     
-    response = sr1(IP(dst= ip,ttl = time)/ICMP()/ bytes) # if None, no response 
+
+def pingIpAdr(ip:str,timeout_pr =8)-> tuple[Optional[Packet], float]:
+       
+     startTime = time.time() #bytes
     
-    endTime = time.time()
+     response = sr1(IP(dst= ip) /ICMP(),verbose= False)  
     
-    elapsedTime = endTime - startTime
+     endTime = time.time()
     
-    if response:
-       return f"Reply from {ip}: bytes{bytes} time:{elapsedTime* 1000} ttl:{time}" # response 
-        
-    else: # no response
-        return f"Destination:{ip} unreachable"
-        
+     elapsedTime = endTime - startTime
+
+     return (response, elapsedTime)
+   
+   
+def sendPing(ipAdr:str):
+    
+    return checkDataPacket(pingIpAdr(ipAdr))
+
