@@ -16,8 +16,8 @@ def filterICMPTime():
 #going to bed, maybe use sr1 to send and wait for one packet?, then check what the syntax is for getting icmp banner info like echo reply and time- exceeded is it code or type??
 
 
-#TraceRoute for ICMP version, we send packets with IP protocal, and sniff filters these and gets all the ICMP packets that come back
-#Then I filter these packets by the the type of ICMP protocal is being used.
+#TraceRoute for ICMP version, we send packets with IP protocol, and sniff filters these and gets all the ICMP packets that come back
+#Then I filter these packets by the the type of ICMP protocol is being used.
 def recordICMPIncoming(ipAdr,maxTTL=30):
 
 
@@ -36,7 +36,7 @@ def recordICMPIncoming(ipAdr,maxTTL=30):
         
         
         
-        
+#If im sending packets to a network that filters ICMP packets run the UDP traceroute version??
         
         
         
