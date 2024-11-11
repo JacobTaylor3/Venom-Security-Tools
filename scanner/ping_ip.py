@@ -39,7 +39,7 @@ def pingIpAdr(ip:str,timeout_pr =8)-> tuple[Optional[Packet], float]: #test this
    
 def sendPing(ipAdr:str):
     output = []
-    for _i in range(0,3):
+    for _i in range(0,4):
         output.append(checkDataPacket(pingIpAdr(ipAdr)))
      
     return output
