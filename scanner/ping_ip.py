@@ -6,8 +6,6 @@ import time
 from typing import Optional
 
 
-
-
 def checkDataPacket(response:tuple[Optional[Packet], float])->str:
     if response[0] is not None and response[0].haslayer(ICMP):
 
@@ -22,7 +20,6 @@ def checkDataPacket(response:tuple[Optional[Packet], float])->str:
     else:
         return "Destination unreachable"
        
-    
 
 def pingIpAdr(ip:str,timeout_pr =8)-> tuple[Optional[Packet], float]: #test this function for testing make sure its not None
        
@@ -47,4 +44,4 @@ def sendPing(ipAdr:str):
     return output
 
 
-print(sendPing("8.8.8.8"))
+print(sendPing("1.1.1.1"))
