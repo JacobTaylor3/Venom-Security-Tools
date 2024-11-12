@@ -3,8 +3,7 @@ from scapy.all import IP, ICMP, sr1,Raw,send,Packet
 
 import time 
 
-from typing import Optional
-
+from typing import Optional,List
 
 
 
@@ -41,8 +40,22 @@ def sendPing(ipAdr:str):
     output = []
     for _i in range(0,4):
         output.append(checkDataPacket(pingIpAdr(ipAdr)))
+        
+    output.append(f"Packet Loss:{round(checkPacketLoss(output),2)}%")
      
     return output
+
+def checkPacketLoss(outputArr:List[tuple[Optional[Packet], float]]):
+    totalSent = len(outputArr)
+    pckLoss = 0
+    
+    for response in outputArr:
+       if response[0] is None:
+           pckLoss+=1
+           
+    return pckLoss/totalSent
+
+
 
 print(sendPing("1.1.1.1"))
 
