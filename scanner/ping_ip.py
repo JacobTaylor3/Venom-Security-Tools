@@ -6,7 +6,6 @@ import time
 from typing import Optional,List
 
 
-
 def checkDataPacket(response:tuple[Optional[Packet], float])->str:
     if response[0] is not None and response[0].haslayer(ICMP):
 
@@ -22,7 +21,6 @@ def checkDataPacket(response:tuple[Optional[Packet], float])->str:
         return "Destination unreachable"
        
     
-
 def pingIpAdr(ip:str,timeout_pr =8)-> tuple[Optional[Packet], float]: #test this function for testing make sure its not None
        
      startTime = time.time() #bytes
@@ -41,10 +39,14 @@ def sendPing(ipAdr:str,count= 4):
     for _i in range(0,count):
         output.append(checkDataPacket(pingIpAdr(ipAdr)))
         
-    output.append(f"Packet Loss:{checkPacketLoss(output)}%")
-     
-    return output
+    return formatPacketLoss(output)
 
+def formatPacketLoss(outputArr:List[str]):
+    copyArr = outputArr[:]
+    copyArr.append(f"Packet Loss:{checkPacketLoss(copyArr)}%")
+    return copyArr
+    
+    
 def checkPacketLoss(outputArr:List[tuple[Optional[Packet], float]]):
     totalSent = len(outputArr)
     pckLoss = 0
@@ -56,7 +58,6 @@ def checkPacketLoss(outputArr:List[tuple[Optional[Packet], float]]):
 
            
     return round(((pckLoss/totalSent) * 100),0)
-
 
 
 print(sendPing("192.168.1.92"))
