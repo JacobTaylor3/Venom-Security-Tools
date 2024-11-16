@@ -5,7 +5,7 @@ import time
 
 from typing import Optional,List
 
-
+#instead of returning a string return a arr or a map or something with the data insteadof strings,tuple, these functions shouldnt be returing strings but values then make one functio nthat formats everything
 def checkDataPacket(response:tuple[Optional[Packet], float])->str:
     if response[0] is not None and response[0].haslayer(ICMP):
 
