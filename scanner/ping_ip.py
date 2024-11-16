@@ -1,5 +1,5 @@
 
-from scapy.all import IP, ICMP, sr1,Raw,send,Packet
+from scapy.all import IP, ICMP, sr1,Packet
 
 import time 
 
@@ -36,12 +36,12 @@ def pingIpAdr(ip:str,timeout_pr =8)-> tuple[Optional[Packet], float]: #test this
      return (response, elapsedMiliseconds)
    
    
-def sendPing(ipAdr:str):
+def sendPing(ipAdr:str,count= 4):
     output = []
-    for _i in range(0,4):
+    for _i in range(0,count):
         output.append(checkDataPacket(pingIpAdr(ipAdr)))
         
-    output.append(f"Packet Loss:{round(checkPacketLoss(output),2)}%")
+    output.append(f"Packet Loss:{checkPacketLoss(output)}%")
      
     return output
 
@@ -50,13 +50,15 @@ def checkPacketLoss(outputArr:List[tuple[Optional[Packet], float]]):
     pckLoss = 0
     
     for response in outputArr:
-       if response[0] is None:
+       if response == "Destination unreachable":
            pckLoss+=1
            
-    return pckLoss/totalSent
+
+           
+    return round(((pckLoss/totalSent) * 100),0)
 
 
 
-print(sendPing("1.1.1.1"))
+print(sendPing("192.168.1.92"))
 
 
