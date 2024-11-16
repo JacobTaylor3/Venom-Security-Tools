@@ -27,7 +27,7 @@ def pingIpAdr(ip:str,timeout_pr =8)-> tuple[Optional[Packet], float]: #test this
        
      startTime = time.time() #bytes
     
-     response = sr1(IP(dst= ip) /ICMP(),verbose= False)  
+     response = sr1(IP(dst= ip) /ICMP(),verbose= False,timeout=5)  
     
      endTime = time.time()
     
