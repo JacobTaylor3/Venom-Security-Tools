@@ -22,7 +22,7 @@ def checkDataPacket(response:tuple[Optional[Packet], float])->str:
        
     
 def pingIpAdr(ip:str,timeout_pr =8)-> tuple[Optional[Packet], float]: #test this function for testing make sure its not None
-       
+    
      startTime = time.time() #bytes
     
      response = sr1(IP(dst= ip) /ICMP(),verbose= False,timeout=5)  
@@ -39,9 +39,9 @@ def sendPing(ipAdr:str,count= 4):
     for _i in range(0,count):
         output.append(checkDataPacket(pingIpAdr(ipAdr)))
         
-    return formatPacketLoss(output)
+    return addPacketLoss(output)
 
-def formatPacketLoss(outputArr:List[str]):
+def addPacketLoss(outputArr:List[str]):
     copyArr = outputArr[:]
     copyArr.append(f"Packet Loss:{checkPacketLoss(copyArr)}%")
     return copyArr
@@ -61,5 +61,3 @@ def checkPacketLoss(outputArr:List[tuple[Optional[Packet], float]]):
 
 
 print(sendPing("192.168.1.92"))
-
-
