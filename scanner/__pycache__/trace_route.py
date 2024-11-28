@@ -45,3 +45,5 @@ def runTraceRoute():
 
 
 runTraceRoute()
+
+#need to figure out how to stop the function when theres an error/ttl is over or at 30/ we get an echo reply. 
