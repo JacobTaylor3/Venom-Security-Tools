@@ -4,76 +4,44 @@ import time
 
 
 
-
-def filterICMPTime():
-
-    filter = f"icmp and icmp[0] == 11"
+def stopFilter(pck:Packet)-> bool: # stop the filter when we get a echo reply message or ttl is >= 30  
     
-    sniff()
+    if pck.haslayer(IP):
+        if pck.getlayer(IP).ttl >=30:
+            return True
     
+    
+    return pck.haslayer(ICMP) and pck.getlayer(ICMP).type == 0 
+    
+    
+def filterPck(pck:Packet) -> bool:# filter for time exceed icmp return types
+    
+    return (pck.haslayer(ICMP) and pck.getlayer(ICMP).type== 11)
 
 
-#going to bed, maybe use sr1 to send and wait for one packet?, then check what the syntax is for getting icmp banner info like echo reply and time- exceeded is it code or type??
-
-
-#TraceRoute for ICMP version, we send packets with IP protocol, and sniff filters these and gets all the ICMP packets that come back
-#Then I filter these packets by the the type of ICMP protocol is being used.
-def recordICMPIncoming(ipAdr,maxTTL=30):
-
-
-    ttlCount:int = 1 #initial time to live value 
-        
-    t= AsyncSniffer(filter = "icmp",stop_filter= lambda x: (x.haslayer(ICMP) and x[ICMP].code ==0) or x[ICMP].code ==0) # filtering for icmp and when the recived packed is an echo-reply then we stop, need to fiure out destination unreachable
+def traceRoute(ipAdr,ttlPck)-> list[Packet]:
     
-    t.start()
+    pck = IP(dst = ipAdr,ttl =ttlPck) / ICMP(type = 8) ## sends icmp packets with ttl from 1-30  
     
-    while ttlCount <= maxTTL:
-        
-        response:Packet = send(IP(dst =ipAdr,ttl = ttlCount),count =1)
-        
-        
+    asyncFilter = AsyncSniffer(count = 0 ,filter = "icmp", lfilter = stopFilter , stop_filter= stopFilter,timeout = 60)
     
-        
-        
-        
-#If im sending packets to a network that filters ICMP packets run the UDP traceroute version??
-        
-        
-        
-        
-        
-        
-        
+    asyncFilter.start() # starts sniffer, maybe just manually stop the filter research how 
     
-   
-           
-        
-            
-        
-        
-        
-            
+    send(pck,verbose = None,count =3) # we will just have to send it 3 times and filter out any common ip addresses
     
-        
+    asyncFilter.join()
+    
+    return asyncFilter.results
 
 
 
-
-print(recordTrace("8.8.8.8"))
-        
-        
-        
-        
-            
+def runTraceRoute():
+    pckList = []
     
-    
-        
-        
-        
-    
-    
-    
-    
-    
+    for i in range(1,30+1):
+        pckList.append(traceRoute("8.8.8.8",i))
+        print(pckList[i-1][i-1][IP].getlayer(IP).src)
 
 
+
+runTraceRoute()
