@@ -1,49 +1,60 @@
-from scapy.all import IP,sr1,send,ICMP,Packet,sniff,AsyncSniffer
-
-import time
+from scapy.all import IP, send, ICMP, Packet, AsyncSniffer
 
 
+def filterPck(pck: Packet) -> bool:  # filter for time exceed icmp return types
+    print("Src:", pck.getlayer(IP).src)
+    print("Dst:", pck.getlayer(IP).dst)
+    print("Type:", pck.getlayer(ICMP).type)
+    return (
+        pck.haslayer(ICMP)
+        and pck.getlayer(ICMP).type == 11
+        or pck.getlayer(ICMP).type == 0
+    )
 
-def stopFilter(pck:Packet)-> bool: # stop the filter when we get a echo reply message or ttl is >= 30  
-    
-    if pck.haslayer(IP):
-        if pck.getlayer(IP).ttl >=30:
+
+def traceRoute(ipAdr) -> list[Packet]:
+
+    ttlVal = 1
+    flag = True
+
+    def stopFilter(
+        pck: Packet,
+    ) -> bool:  # stop the filter when we get a echo reply message or ttl is >= 30
+        nonlocal flag
+
+        if ttlVal >= 30 or (pck.haslayer(ICMP) and pck.getlayer(ICMP).type == 0):
+            flag = False
             return True
-    
-    
-    return pck.haslayer(ICMP) and pck.getlayer(ICMP).type == 0 
-    
-    
-def filterPck(pck:Packet) -> bool:# filter for time exceed icmp return types
-    
-    return (pck.haslayer(ICMP) and pck.getlayer(ICMP).type== 11)
 
+        return False
 
-def traceRoute(ipAdr,ttlPck)-> list[Packet]:
-    
-    pck = IP(dst = ipAdr,ttl =ttlPck) / ICMP(type = 8) ## sends icmp packets with ttl from 1-30  
-    
-    asyncFilter = AsyncSniffer(count = 0 ,filter = "icmp", lfilter = stopFilter , stop_filter= stopFilter,timeout = 60)
-    
-    asyncFilter.start() # starts sniffer, maybe just manually stop the filter research how 
-    
-    send(pck,verbose = None,count =3) # we will just have to send it 3 times and filter out any common ip addresses
-    
-    asyncFilter.join()
-    
+    asyncFilter = AsyncSniffer(
+        count=0,
+        filter="icmp and (icmp[0] == 0 or icmp[0] == 11) and src host not 192.168.1.209",
+        lfilter=filterPck,
+        stop_filter=stopFilter,
+        timeout=60,
+    )
+
+    asyncFilter.start()  # starts sniffer, maybe just manually stop the filter research how
+
+    while flag and ttlVal <= 30:
+
+        send(
+            IP(dst=ipAdr, ttl=ttlVal) / ICMP(type=8),
+            realtime=True,
+            inter=2,
+            verbose=False,
+        )  # we will just have to send it 3 times and filter out any common ip addresses
+        ttlVal += 1
+
     return asyncFilter.results
 
 
+# Testing
+x = traceRoute("208.67.222.222")
 
-def runTraceRoute():
-    pckList = []
-    
-    for i in range(1,30+1):
-        pckList.append(traceRoute("8.8.8.8",i))
-        print(pckList[i-1][i-1][IP].getlayer(IP).src)
+print(len(x))
 
-
-
-runTraceRoute()
-
-#need to figure out how to stop the function when theres an error/ttl is over or at 30/ we get an echo reply. 
+for packet in x:
+    print(packet.getlayer(IP).src)
