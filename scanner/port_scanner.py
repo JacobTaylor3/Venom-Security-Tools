@@ -2,26 +2,35 @@
 
 # Full TCP connection
 
-from scapy.all import IP, send, ICMP, Packet, AsyncSniffer, TCP, sr1, sniff
+from scapy.all import IP, TCP, sr1
 
 import random
 
 import time
 
+# I want to go over packet fragmentation, banner grabbing, and tcp packet data like options and windows, seq, chksum, etc
+
 
 class PortScanner:
 
-    # 1- 40
-
-    def __init__(self, ipAdr="", portNum=(0, 0), duration=180):
+    def __init__(self, ipAdr="", portNum=(0, 0)):
 
         self.ipAddress = ipAdr
         self.portNumbers = list(range(portNum[0], portNum[1] + 1))
         self.portList = []
-        self.duration = duration
+
+    def setIpAddress(self, ip):
+        self.ipAddress = ip
+
+    def getIpAddress(self):
+        return self.ipAddress
+
+    def resetPortList(self):
+        self.portList = []
 
     def sendSYNPacket(self, portNum):
         randomSeq = random.randint(0, 2**32 - 1)
+        window_size = random.randint(1024, 65535)
 
         craftPacket = IP(dst=self.ipAddress, ttl=64, version=4) / TCP(
             dport=portNum,
@@ -30,9 +39,10 @@ class PortScanner:
             chksum=None,
             seq=randomSeq,
             options=[("Timestamp", (0, 0))],
+            window=window_size,
         )
 
-        response = sr1(craftPacket, timeout=5)  # timeouts after 5 seconds
+        response = sr1((craftPacket), timeout=5)  # timeouts after 5 seconds
 
         if response is None:
             self.portList.append({"port": portNum, "status": "filtered"})
@@ -53,16 +63,30 @@ class PortScanner:
             else:
                 self.portList.append({"port": portNum, "status": "closed"})
 
-    def sendPackets(self):
+    def TCPConnectionScan():
+        pass
 
-        length = len(self.portNumbers)
-        for _i in range(0, length):
-            portNumber = self.portNumbers.pop(0)
-            self.sendSYNPacket(portNumber)
-            time.sleep(2)
+    def fragmentScan():
+        pass
+
+    def UDPScan():
+        pass
+
+    def grabBanner():
+        pass
+
+    def startScan(self, function):
+
+        portNumCopy = list(self.portNumbers)
+
+        random.shuffle(portNumCopy)
+        for port in range(0, len(self.portNumbers)):
+            function(portNumCopy[port])
+            time.sleep(random.uniform(0.5, 2.0))
 
 
 test = PortScanner("192.168.1.172", (1, 80))
 
-test.sendPackets()
+test.startScan(test.sendSYNPacket)
+
 print(test.portList)
