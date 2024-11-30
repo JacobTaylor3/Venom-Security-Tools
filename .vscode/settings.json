@@ -9,7 +9,9 @@
     "python.testing.pytestEnabled": false,
     "python.testing.unittestEnabled": true,
     "cSpell.words": [
+        "chksum",
         "dport",
-        "getlayer"
+        "getlayer",
+        "haslayer"
     ]
 }

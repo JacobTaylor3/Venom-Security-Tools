@@ -2,7 +2,9 @@
 
 # Full TCP connection
 
-from scapy.all import IP, send, ICMP, Packet, AsyncSniffer, TCP
+from scapy.all import IP, send, ICMP, Packet, AsyncSniffer, TCP, sr1, sniff
+
+import random
 
 import time
 
@@ -14,39 +16,53 @@ class PortScanner:
     def __init__(self, ipAdr="", portNum=(0, 0), duration=180):
 
         self.ipAddress = ipAdr
-        self.portNumbers = portNum
-        self.OpenPorts = []
+        self.portNumbers = list(range(portNum[0], portNum[1] + 1))
+        self.portList = []
         self.duration = duration
 
-    def sendSYNPackets(self):
-        startTime = time.time()
+    def sendSYNPacket(self, portNum):
+        randomSeq = random.randint(0, 2**32 - 1)
 
-        asyncFilter = AsyncSniffer(
-            count=0,
-            filter=(
-                f"tcp[tcpflags] & tcp-ack != 0 and portrange {self.portNumbers[0]}-{self.portNumbers[1]} "
-                f"and src host {self.ipAddress} "
-                f"and not src host 192.168.1.209"
-            ),
-            timeout=180,
+        craftPacket = IP(dst=self.ipAddress, ttl=64, version=4) / TCP(
+            dport=portNum,
+            sport=50000,
+            flags="S",
+            chksum=None,
+            seq=randomSeq,
+            options=[("Timestamp", (0, 0))],
         )
 
-        asyncFilter.start()
+        response = sr1(craftPacket, timeout=5)  # timeouts after 5 seconds
 
-        send(
-            IP(dst=self.ipAddress, ttl=64) / TCP(dport=self.portNumbers, flags="S"),
-            realtime=True,
-        )
+        if response is None:
+            self.portList.append({"port": portNum, "status": "filtered"})
 
-        time.sleep(60)
+        # the response got received now need to check response
 
-        asyncFilter.stop()
-        
-        asyncFilter.su
+        else:
+            if (
+                response.haslayer(TCP)
+                and response.getlayer(TCP).sprintf("%TCP.flags%") == "SA"
+            ):
+                self.portList.append({"port": portNum, "status": "open"})
+            elif (
+                response.haslayer(TCP)
+                and response.getlayer(TCP).sprintf("%TCP.flags%") == "R"
+            ):
+                self.portList.append({"port": portNum, "status": "closed"})
+            else:
+                self.portList.append({"port": portNum, "status": "closed"})
 
-        return asyncFilter.results
+    def sendPackets(self):
+
+        length = len(self.portNumbers)
+        for _i in range(0, length):
+            portNumber = self.portNumbers.pop(0)
+            self.sendSYNPacket(portNumber)
+            time.sleep(2)
 
 
-portscan = PortScanner("192.168.1.172", (1, 1000))
+test = PortScanner("192.168.1.172", (1, 80))
 
-(portscan.sendSYNPackets())
+test.sendPackets()
+print(test.portList)
