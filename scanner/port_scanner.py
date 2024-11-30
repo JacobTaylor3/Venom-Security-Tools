@@ -28,18 +28,25 @@ class PortScanner:
     def resetPortList(self):
         self.portList = []
 
-    def sendSYNPacket(self, portNum):
-        randomSeq = random.randint(0, 2**32 - 1)
-        window_size = random.randint(1024, 65535)
+    def getCurrentPortList(self):
+        return self.portList
+
+    def getRandomSeq():
+        return random.randint(0, 2**32 - 1)
+
+    def getRandomWindow():
+        return random.randint(1024, 65535)
+
+    def SYNScan(self, portNum):
 
         craftPacket = IP(dst=self.ipAddress, ttl=64, version=4) / TCP(
             dport=portNum,
             sport=50000,
             flags="S",
             chksum=None,
-            seq=randomSeq,
+            seq=self.getRandomSeq(),
             options=[("Timestamp", (0, 0))],
-            window=window_size,
+            window=self.getRandomWindow(),
         )
 
         response = sr1((craftPacket), timeout=5)  # timeouts after 5 seconds
@@ -87,6 +94,6 @@ class PortScanner:
 
 test = PortScanner("192.168.1.172", (1, 80))
 
-test.startScan(test.sendSYNPacket)
+test.startScan(test.SYNScan)
 
 print(test.portList)
