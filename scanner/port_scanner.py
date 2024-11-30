@@ -8,7 +8,7 @@ import random
 
 import time
 
-# I want to go over packet fragmentation, banner grabbing, and tcp packet data like options and windows, seq, chksum, etc
+# I want to go over packet fragmentation(Go over how nmap implemented there scanner), banner grabbing, and tcp packet data like options and windows, seq, chksum, etc
 
 
 class PortScanner:
