@@ -2,6 +2,9 @@ from scapy.all import IP, send, ICMP, Packet, AsyncSniffer
 
 import time
 
+import ping_ip
+
+
 
 class TraceRoute:
 

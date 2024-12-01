@@ -1,4 +1,4 @@
-from scapy.all import IP, ICMP, sr1,Packet
+from scapy.all import IP, ICMP, sr1, Packet
 
 import time
 
@@ -10,7 +10,7 @@ class PingIP:
     def __init__(self, ipAdr=""):
         self.ipAdr = ipAdr
 
-    def __checkDataPacket(self,response: tuple[Optional[Packet], float]) -> str:
+    def __checkDataPacket(self, response: tuple[Optional[Packet], float]) -> str:
         if response[0] is not None and response[0].haslayer(ICMP):
 
             PACKET = response[0][IP]
@@ -25,14 +25,16 @@ class PingIP:
             return "Destination unreachable"
 
     def pingIpAdr(
-        self
+        self, ttlVal=64
     ) -> tuple[
         Optional[Packet], float
     ]:  # test this function for testing make sure its not None
 
         startTime = time.time()  # bytes
 
-        response = sr1(IP(dst=self.ipAdr) / ICMP(), verbose=False, timeout=5)
+        response = sr1(
+            IP(dst=self.ipAdr, ttl=ttlVal) / ICMP(), verbose=False, timeout=5
+        )
 
         endTime = time.time()
 
@@ -49,7 +51,7 @@ class PingIP:
 
         return output
 
-    def __checkPacketLoss(self,outputArr: List[tuple[Optional[Packet], float]]):
+    def __checkPacketLoss(self, outputArr: List[tuple[Optional[Packet], float]]):
         totalSent = len(outputArr)
         pckLoss = 0
 
@@ -58,5 +60,3 @@ class PingIP:
                 pckLoss += 1
 
         return pckLoss / totalSent
-
-
