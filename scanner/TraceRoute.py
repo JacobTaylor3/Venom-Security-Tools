@@ -5,7 +5,6 @@ import time
 import ping_ip
 
 
-
 class TraceRoute:
 
     def __init__(
@@ -64,10 +63,9 @@ class TraceRoute:
         print("Src:", pck.getlayer(IP).src)
         print("Dst:", pck.getlayer(IP).dst)
         print("Type:", pck.getlayer(ICMP).type)
-        if self.ttlVal >= 30 or (pck.haslayer(ICMP) and pck.getlayer(ICMP).type == 0):
-            return True
-
-        return False
+        return self.ttlVal >= 30 or (
+            pck.haslayer(ICMP) and pck.getlayer(ICMP).type == 0
+        )
 
     def formatData(self, data):
         ipList = []
