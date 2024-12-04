@@ -12,6 +12,7 @@
         "chksum",
         "dport",
         "getlayer",
-        "haslayer"
+        "haslayer",
+        "lfilter"
     ]
 }
